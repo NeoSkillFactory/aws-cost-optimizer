@@ -1,0 +1,922 @@
+{
+  "success": true,
+  "errors": [],
+  "templatePath": "/home/neo/neo-workspace/skill-factory-service/workspaces/skill-0137-a-skill-that-automatically-analyzes/skill/assets/templates/sample-overprovisioned.yaml",
+  "templateDescription": "Sample CloudFormation template with over-provisioned and unused resources for testing",
+  "region": "us-east-1",
+  "regionMultiplier": 1,
+  "resources": [
+    {
+      "name": "WebServer",
+      "type": "AWS::EC2::Instance",
+      "properties": {
+        "InstanceType": "m5.4xlarge",
+        "ImageId": "ami-0abcdef1234567890",
+        "SecurityGroupIds": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "WebSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "PublicSubnet"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "web-server"
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Fn::Intrinsic": "Ref",
+              "Value": "Environment"
+            }
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.768,
+        "monthly": 560.64,
+        "details": "m5.4xlarge On-Demand pricing"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "high",
+          "title": "EC2 Instance May Be Over-Provisioned",
+          "description": "Instance \"WebServer\" uses m5.4xlarge. If utilization is below 30%, consider downsizing to m5.2xlarge.",
+          "recommendation": "Downsize from m5.4xlarge to m5.2xlarge to save $280.32/month.",
+          "currentSize": "m5.4xlarge",
+          "recommendedSize": "m5.2xlarge",
+          "estimatedSavings": 280.32
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "WebSecurityGroup",
+        "PublicSubnet"
+      ]
+    },
+    {
+      "name": "AppServer",
+      "type": "AWS::EC2::Instance",
+      "properties": {
+        "InstanceType": "r5.2xlarge",
+        "ImageId": "ami-0abcdef1234567890",
+        "SecurityGroupIds": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "AppSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "PrivateSubnet"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "app-server"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.504,
+        "monthly": 367.92,
+        "details": "r5.2xlarge On-Demand pricing"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "high",
+          "title": "EC2 Instance May Be Over-Provisioned",
+          "description": "Instance \"AppServer\" uses r5.2xlarge. If utilization is below 30%, consider downsizing to r5.xlarge.",
+          "recommendation": "Downsize from r5.2xlarge to r5.xlarge to save $183.96/month.",
+          "currentSize": "r5.2xlarge",
+          "recommendedSize": "r5.xlarge",
+          "estimatedSavings": 183.96
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "AppSecurityGroup",
+        "PrivateSubnet"
+      ]
+    },
+    {
+      "name": "BatchProcessor",
+      "type": "AWS::EC2::Instance",
+      "properties": {
+        "InstanceType": "p3.2xlarge",
+        "ImageId": "ami-0abcdef1234567890",
+        "SecurityGroupIds": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "AppSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "PrivateSubnet"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "batch-processor"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 3.06,
+        "monthly": 2233.8,
+        "details": "p3.2xlarge On-Demand pricing"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "high",
+          "title": "GPU Instance Review Recommended",
+          "description": "Instance \"BatchProcessor\" uses GPU instance type p3.2xlarge. GPU instances are expensive. Ensure GPU capabilities are required.",
+          "recommendation": "If no GPU workloads are running, switch to a general-purpose instance like m5.xlarge to save significantly.",
+          "currentSize": "p3.2xlarge",
+          "recommendedSize": "m5.xlarge",
+          "estimatedSavings": 1787.0400000000002
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "AppSecurityGroup",
+        "PrivateSubnet"
+      ]
+    },
+    {
+      "name": "OrphanedVolume",
+      "type": "AWS::EC2::Volume",
+      "properties": {
+        "AvailabilityZone": "us-east-1a",
+        "Size": 500,
+        "VolumeType": "io1",
+        "Iops": 3000,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "orphaned-data-volume"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.3527397260273973,
+        "monthly": 257.5,
+        "details": "io1 500GB + 3000 IOPS"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "high",
+          "title": "Unattached EBS Volume",
+          "description": "Volume \"OrphanedVolume\" is not attached to any EC2 instance in this template. Unattached volumes incur storage costs without providing value.",
+          "recommendation": "Remove the volume if no longer needed, or attach it to an instance.",
+          "estimatedSavings": 257.5
+        },
+        {
+          "category": "optimization",
+          "severity": "medium",
+          "title": "Provisioned IOPS Volume Review",
+          "description": "Volume \"OrphanedVolume\" uses io1 with 3000 IOPS. Provisioned IOPS volumes are significantly more expensive.",
+          "recommendation": "If high IOPS are not consistently needed, switch to gp3 to save $217.50/month.",
+          "estimatedSavings": 217.5
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": []
+    },
+    {
+      "name": "OldBackupVolume",
+      "type": "AWS::EC2::Volume",
+      "properties": {
+        "AvailabilityZone": "us-east-1a",
+        "Size": 1000,
+        "VolumeType": "gp2",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "old-backup-volume"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.136986301369863,
+        "monthly": 100,
+        "details": "gp2 1000GB"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "high",
+          "title": "Unattached EBS Volume",
+          "description": "Volume \"OldBackupVolume\" is not attached to any EC2 instance in this template. Unattached volumes incur storage costs without providing value.",
+          "recommendation": "Remove the volume if no longer needed, or attach it to an instance.",
+          "estimatedSavings": 100
+        },
+        {
+          "category": "optimization",
+          "severity": "low",
+          "title": "Use gp3 Instead of gp2",
+          "description": "Volume \"OldBackupVolume\" uses gp2. gp3 volumes are 20% cheaper with better baseline performance.",
+          "recommendation": "Switch from gp2 to gp3 to save $20.00/month.",
+          "estimatedSavings": 20
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": []
+    },
+    {
+      "name": "Database",
+      "type": "AWS::RDS::DBInstance",
+      "properties": {
+        "DBInstanceClass": "db.r5.4xlarge",
+        "Engine": "mysql",
+        "MasterUsername": "admin",
+        "MasterUserPassword": "supersecretpassword",
+        "AllocatedStorage": 500,
+        "StorageType": "io1",
+        "Iops": 3000,
+        "MultiAZ": true,
+        "DBSubnetGroupName": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "DBSubnetGroup"
+        },
+        "VPCSecurityGroups": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "DBSecurityGroup"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 3.925616438356164,
+        "monthly": 2865.7,
+        "details": "db.r5.4xlarge Multi-AZ + 500GB io1"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "high",
+          "title": "RDS Instance May Be Over-Provisioned",
+          "description": "RDS instance \"Database\" uses db.r5.4xlarge. If database utilization is low, consider downsizing.",
+          "recommendation": "Downsize from db.r5.4xlarge to db.r5.2xlarge to save $1401.60/month.",
+          "currentSize": "db.r5.4xlarge",
+          "recommendedSize": "db.r5.2xlarge",
+          "estimatedSavings": 1401.6
+        },
+        {
+          "category": "overprovisioned",
+          "severity": "medium",
+          "title": "RDS Storage Type Review",
+          "description": "RDS instance \"Database\" uses io1 storage with 3000 provisioned IOPS. This is expensive.",
+          "recommendation": "If high IOPS are not required, switch to gp2/gp3 to save $5.00/month.",
+          "estimatedSavings": 5
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "DBSubnetGroup",
+        "DBSecurityGroup"
+      ]
+    },
+    {
+      "name": "UnusedALB",
+      "type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "properties": {
+        "Name": "unused-alb",
+        "Type": "application",
+        "Subnets": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "PublicSubnet"
+          },
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "PublicSubnet2"
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "WebSecurityGroup"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.0225,
+        "monthly": 16.425,
+        "details": "application load balancer"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "high",
+          "title": "Load Balancer Without Targets",
+          "description": "Load balancer \"UnusedALB\" has no target groups defined in this template. An idle ALB/NLB still incurs hourly charges.",
+          "recommendation": "Add target groups or remove the load balancer if unused.",
+          "estimatedSavings": 16.425
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "PublicSubnet",
+        "PublicSubnet2",
+        "WebSecurityGroup"
+      ]
+    },
+    {
+      "name": "UnusedEIP",
+      "type": "AWS::EC2::EIP",
+      "properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "unused-eip"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.005,
+        "monthly": 3.65,
+        "details": "Elastic IP (unattached cost estimate)"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "medium",
+          "title": "Unassociated Elastic IP",
+          "description": "Elastic IP \"UnusedEIP\" is not associated with any instance or NAT Gateway. Unassociated EIPs cost $0.005/hour.",
+          "recommendation": "Associate the EIP with a resource or release it.",
+          "estimatedSavings": 3.65
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": []
+    },
+    {
+      "name": "SpareEIP",
+      "type": "AWS::EC2::EIP",
+      "properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "spare-eip"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0.005,
+        "monthly": 3.65,
+        "details": "Elastic IP (unattached cost estimate)"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "medium",
+          "title": "Unassociated Elastic IP",
+          "description": "Elastic IP \"SpareEIP\" is not associated with any instance or NAT Gateway. Unassociated EIPs cost $0.005/hour.",
+          "recommendation": "Associate the EIP with a resource or release it.",
+          "estimatedSavings": 3.65
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": []
+    },
+    {
+      "name": "NatGateway",
+      "type": "AWS::EC2::NatGateway",
+      "properties": {
+        "AllocationId": {
+          "Fn::Intrinsic": "GetAtt",
+          "Value": "NatEIP.AllocationId"
+        },
+        "SubnetId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "PublicSubnet"
+        }
+      },
+      "cost": {
+        "hourly": 0.045,
+        "monthly": 32.85,
+        "details": "NAT Gateway hourly charge (excludes data processing)"
+      },
+      "issues": [
+        {
+          "category": "idle",
+          "severity": "low",
+          "title": "NAT Gateway Cost Review",
+          "description": "NAT Gateway \"NatGateway\" costs $0.045/hour plus data charges. Consider whether this is necessary for non-production environments.",
+          "recommendation": "For development, consider using NAT instances or VPC endpoints instead.",
+          "estimatedSavings": 16.425
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "NatEIP",
+        "PublicSubnet"
+      ]
+    },
+    {
+      "name": "NatEIP",
+      "type": "AWS::EC2::EIP",
+      "properties": {
+        "Domain": "vpc"
+      },
+      "cost": {
+        "hourly": 0.005,
+        "monthly": 3.65,
+        "details": "Elastic IP (unattached cost estimate)"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": []
+    },
+    {
+      "name": "SessionTable",
+      "type": "AWS::DynamoDB::Table",
+      "properties": {
+        "TableName": "sessions",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "sessionId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "sessionId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1000,
+          "WriteCapacityUnits": 1000
+        }
+      },
+      "cost": {
+        "hourly": 0.78,
+        "monthly": 569.4,
+        "details": "1000 RCU + 1000 WCU provisioned"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "high",
+          "title": "DynamoDB High Provisioned Throughput",
+          "description": "DynamoDB table \"SessionTable\" has 1000 RCU and 1000 WCU provisioned. High provisioned throughput can be costly if not fully utilized.",
+          "recommendation": "Consider switching to on-demand billing or enabling auto-scaling. Potential savings: $398.58/month.",
+          "estimatedSavings": 398.58
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": []
+    },
+    {
+      "name": "CacheCluster",
+      "type": "AWS::ElastiCache::CacheCluster",
+      "properties": {
+        "CacheNodeType": "cache.r5.xlarge",
+        "Engine": "redis",
+        "NumCacheNodes": 1,
+        "CacheSubnetGroupName": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "CacheSubnetGroup"
+        }
+      },
+      "cost": {
+        "hourly": 0.455,
+        "monthly": 332.15000000000003,
+        "details": "1x cache.r5.xlarge"
+      },
+      "issues": [
+        {
+          "category": "overprovisioned",
+          "severity": "medium",
+          "title": "ElastiCache Node May Be Over-Provisioned",
+          "description": "Cache cluster \"CacheCluster\" uses cache.r5.xlarge. If cache utilization is low, consider downsizing.",
+          "recommendation": "Downsize from cache.r5.xlarge to cache.r5.large to save $165.71/month.",
+          "currentSize": "cache.r5.xlarge",
+          "recommendedSize": "cache.r5.large",
+          "estimatedSavings": 165.71000000000004
+        }
+      ],
+      "isReferenced": false,
+      "dependsOn": [
+        "CacheSubnetGroup"
+      ]
+    },
+    {
+      "name": "VPC",
+      "type": "AWS::EC2::VPC",
+      "properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsSupport": true,
+        "EnableDnsHostnames": true
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": []
+    },
+    {
+      "name": "PublicSubnet",
+      "type": "AWS::EC2::Subnet",
+      "properties": {
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "AvailabilityZone": "us-east-1a"
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "PublicSubnet2",
+      "type": "AWS::EC2::Subnet",
+      "properties": {
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        },
+        "CidrBlock": "10.0.2.0/24",
+        "AvailabilityZone": "us-east-1b"
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "PrivateSubnet",
+      "type": "AWS::EC2::Subnet",
+      "properties": {
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        },
+        "CidrBlock": "10.0.3.0/24",
+        "AvailabilityZone": "us-east-1a"
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "WebSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "properties": {
+        "GroupDescription": "Web server security group",
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "AppSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "properties": {
+        "GroupDescription": "App server security group",
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "DBSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "properties": {
+        "GroupDescription": "Database security group",
+        "VpcId": {
+          "Fn::Intrinsic": "Ref",
+          "Value": "VPC"
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "Free or usage-based pricing"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "VPC"
+      ]
+    },
+    {
+      "name": "DBSubnetGroup",
+      "type": "AWS::RDS::DBSubnetGroup",
+      "properties": {
+        "DBSubnetGroupDescription": "DB subnet group",
+        "SubnetIds": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "PrivateSubnet"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "No pricing data available"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "PrivateSubnet"
+      ]
+    },
+    {
+      "name": "CacheSubnetGroup",
+      "type": "AWS::ElastiCache::SubnetGroup",
+      "properties": {
+        "Description": "Cache subnet group",
+        "SubnetIds": [
+          {
+            "Fn::Intrinsic": "Ref",
+            "Value": "PrivateSubnet"
+          }
+        ]
+      },
+      "cost": {
+        "hourly": 0,
+        "monthly": 0,
+        "details": "No pricing data available"
+      },
+      "issues": [],
+      "isReferenced": true,
+      "dependsOn": [
+        "PrivateSubnet"
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "resource": "BatchProcessor",
+      "resourceType": "AWS::EC2::Instance",
+      "category": "overprovisioned",
+      "severity": "high",
+      "title": "GPU Instance Review Recommended",
+      "description": "Instance \"BatchProcessor\" uses GPU instance type p3.2xlarge. GPU instances are expensive. Ensure GPU capabilities are required.",
+      "recommendation": "If no GPU workloads are running, switch to a general-purpose instance like m5.xlarge to save significantly.",
+      "currentSize": "p3.2xlarge",
+      "recommendedSize": "m5.xlarge",
+      "estimatedSavings": 1787.0400000000002
+    },
+    {
+      "resource": "Database",
+      "resourceType": "AWS::RDS::DBInstance",
+      "category": "overprovisioned",
+      "severity": "high",
+      "title": "RDS Instance May Be Over-Provisioned",
+      "description": "RDS instance \"Database\" uses db.r5.4xlarge. If database utilization is low, consider downsizing.",
+      "recommendation": "Downsize from db.r5.4xlarge to db.r5.2xlarge to save $1401.60/month.",
+      "currentSize": "db.r5.4xlarge",
+      "recommendedSize": "db.r5.2xlarge",
+      "estimatedSavings": 1401.6
+    },
+    {
+      "resource": "SessionTable",
+      "resourceType": "AWS::DynamoDB::Table",
+      "category": "overprovisioned",
+      "severity": "high",
+      "title": "DynamoDB High Provisioned Throughput",
+      "description": "DynamoDB table \"SessionTable\" has 1000 RCU and 1000 WCU provisioned. High provisioned throughput can be costly if not fully utilized.",
+      "recommendation": "Consider switching to on-demand billing or enabling auto-scaling. Potential savings: $398.58/month.",
+      "estimatedSavings": 398.58
+    },
+    {
+      "resource": "WebServer",
+      "resourceType": "AWS::EC2::Instance",
+      "category": "overprovisioned",
+      "severity": "high",
+      "title": "EC2 Instance May Be Over-Provisioned",
+      "description": "Instance \"WebServer\" uses m5.4xlarge. If utilization is below 30%, consider downsizing to m5.2xlarge.",
+      "recommendation": "Downsize from m5.4xlarge to m5.2xlarge to save $280.32/month.",
+      "currentSize": "m5.4xlarge",
+      "recommendedSize": "m5.2xlarge",
+      "estimatedSavings": 280.32
+    },
+    {
+      "resource": "OrphanedVolume",
+      "resourceType": "AWS::EC2::Volume",
+      "category": "idle",
+      "severity": "high",
+      "title": "Unattached EBS Volume",
+      "description": "Volume \"OrphanedVolume\" is not attached to any EC2 instance in this template. Unattached volumes incur storage costs without providing value.",
+      "recommendation": "Remove the volume if no longer needed, or attach it to an instance.",
+      "estimatedSavings": 257.5
+    },
+    {
+      "resource": "OrphanedVolume",
+      "resourceType": "AWS::EC2::Volume",
+      "category": "optimization",
+      "severity": "medium",
+      "title": "Provisioned IOPS Volume Review",
+      "description": "Volume \"OrphanedVolume\" uses io1 with 3000 IOPS. Provisioned IOPS volumes are significantly more expensive.",
+      "recommendation": "If high IOPS are not consistently needed, switch to gp3 to save $217.50/month.",
+      "estimatedSavings": 217.5
+    },
+    {
+      "resource": "AppServer",
+      "resourceType": "AWS::EC2::Instance",
+      "category": "overprovisioned",
+      "severity": "high",
+      "title": "EC2 Instance May Be Over-Provisioned",
+      "description": "Instance \"AppServer\" uses r5.2xlarge. If utilization is below 30%, consider downsizing to r5.xlarge.",
+      "recommendation": "Downsize from r5.2xlarge to r5.xlarge to save $183.96/month.",
+      "currentSize": "r5.2xlarge",
+      "recommendedSize": "r5.xlarge",
+      "estimatedSavings": 183.96
+    },
+    {
+      "resource": "CacheCluster",
+      "resourceType": "AWS::ElastiCache::CacheCluster",
+      "category": "overprovisioned",
+      "severity": "medium",
+      "title": "ElastiCache Node May Be Over-Provisioned",
+      "description": "Cache cluster \"CacheCluster\" uses cache.r5.xlarge. If cache utilization is low, consider downsizing.",
+      "recommendation": "Downsize from cache.r5.xlarge to cache.r5.large to save $165.71/month.",
+      "currentSize": "cache.r5.xlarge",
+      "recommendedSize": "cache.r5.large",
+      "estimatedSavings": 165.71000000000004
+    },
+    {
+      "resource": "OldBackupVolume",
+      "resourceType": "AWS::EC2::Volume",
+      "category": "idle",
+      "severity": "high",
+      "title": "Unattached EBS Volume",
+      "description": "Volume \"OldBackupVolume\" is not attached to any EC2 instance in this template. Unattached volumes incur storage costs without providing value.",
+      "recommendation": "Remove the volume if no longer needed, or attach it to an instance.",
+      "estimatedSavings": 100
+    },
+    {
+      "resource": "OldBackupVolume",
+      "resourceType": "AWS::EC2::Volume",
+      "category": "optimization",
+      "severity": "low",
+      "title": "Use gp3 Instead of gp2",
+      "description": "Volume \"OldBackupVolume\" uses gp2. gp3 volumes are 20% cheaper with better baseline performance.",
+      "recommendation": "Switch from gp2 to gp3 to save $20.00/month.",
+      "estimatedSavings": 20
+    },
+    {
+      "resource": "UnusedALB",
+      "resourceType": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "category": "idle",
+      "severity": "high",
+      "title": "Load Balancer Without Targets",
+      "description": "Load balancer \"UnusedALB\" has no target groups defined in this template. An idle ALB/NLB still incurs hourly charges.",
+      "recommendation": "Add target groups or remove the load balancer if unused.",
+      "estimatedSavings": 16.425
+    },
+    {
+      "resource": "NatGateway",
+      "resourceType": "AWS::EC2::NatGateway",
+      "category": "idle",
+      "severity": "low",
+      "title": "NAT Gateway Cost Review",
+      "description": "NAT Gateway \"NatGateway\" costs $0.045/hour plus data charges. Consider whether this is necessary for non-production environments.",
+      "recommendation": "For development, consider using NAT instances or VPC endpoints instead.",
+      "estimatedSavings": 16.425
+    },
+    {
+      "resource": "Database",
+      "resourceType": "AWS::RDS::DBInstance",
+      "category": "overprovisioned",
+      "severity": "medium",
+      "title": "RDS Storage Type Review",
+      "description": "RDS instance \"Database\" uses io1 storage with 3000 provisioned IOPS. This is expensive.",
+      "recommendation": "If high IOPS are not required, switch to gp2/gp3 to save $5.00/month.",
+      "estimatedSavings": 5
+    },
+    {
+      "resource": "UnusedEIP",
+      "resourceType": "AWS::EC2::EIP",
+      "category": "idle",
+      "severity": "medium",
+      "title": "Unassociated Elastic IP",
+      "description": "Elastic IP \"UnusedEIP\" is not associated with any instance or NAT Gateway. Unassociated EIPs cost $0.005/hour.",
+      "recommendation": "Associate the EIP with a resource or release it.",
+      "estimatedSavings": 3.65
+    },
+    {
+      "resource": "SpareEIP",
+      "resourceType": "AWS::EC2::EIP",
+      "category": "idle",
+      "severity": "medium",
+      "title": "Unassociated Elastic IP",
+      "description": "Elastic IP \"SpareEIP\" is not associated with any instance or NAT Gateway. Unassociated EIPs cost $0.005/hour.",
+      "recommendation": "Associate the EIP with a resource or release it.",
+      "estimatedSavings": 3.65
+    }
+  ],
+  "summary": {
+    "totalResources": 22,
+    "analyzedResources": 22,
+    "totalMonthlyCost": 7347.334999999998,
+    "totalPotentialSavings": 4857.36,
+    "savingsPercentage": 66.11050129060402,
+    "issuesByCategory": {
+      "overprovisioned": {
+        "count": 7,
+        "totalSavings": 4222.210000000001
+      },
+      "idle": {
+        "count": 6,
+        "totalSavings": 397.65
+      },
+      "optimization": {
+        "count": 2,
+        "totalSavings": 237.5
+      }
+    },
+    "resourcesByType": {
+      "AWS::EC2::Instance": 3,
+      "AWS::EC2::Volume": 2,
+      "AWS::RDS::DBInstance": 1,
+      "AWS::ElasticLoadBalancingV2::LoadBalancer": 1,
+      "AWS::EC2::EIP": 3,
+      "AWS::EC2::NatGateway": 1,
+      "AWS::DynamoDB::Table": 1,
+      "AWS::ElastiCache::CacheCluster": 1,
+      "AWS::EC2::VPC": 1,
+      "AWS::EC2::Subnet": 3,
+      "AWS::EC2::SecurityGroup": 3,
+      "AWS::RDS::DBSubnetGroup": 1,
+      "AWS::ElastiCache::SubnetGroup": 1
+    }
+  }
+}

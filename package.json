@@ -1,0 +1,30 @@
+{
+  "name": "aws-cost-optimizer",
+  "version": "1.0.0",
+  "description": "Automatically analyzes AWS CloudFormation templates to identify unused or over-provisioned resources for cost optimization.",
+  "main": "scripts/analyze.js",
+  "bin": {
+    "cfn-cost-opt": "./bin/cfn-cost-opt"
+  },
+  "scripts": {
+    "start": "node scripts/cli.js",
+    "analyze": "node scripts/cli.js analyze",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
+    "lint": "echo 'no linter configured'"
+  },
+  "keywords": [
+    "aws",
+    "cloudformation",
+    "cost-optimization",
+    "devops",
+    "openclaw"
+  ],
+  "author": "OpenClaw",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

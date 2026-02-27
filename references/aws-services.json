@@ -1,0 +1,278 @@
+{
+  "resourceTypes": {
+    "AWS::EC2::Instance": {
+      "category": "Compute",
+      "pricing": {
+        "t2.micro": 0.0116,
+        "t2.small": 0.023,
+        "t2.medium": 0.0464,
+        "t2.large": 0.0928,
+        "t2.xlarge": 0.1856,
+        "t3.micro": 0.0104,
+        "t3.small": 0.0208,
+        "t3.medium": 0.0416,
+        "t3.large": 0.0832,
+        "t3.xlarge": 0.1664,
+        "m5.large": 0.096,
+        "m5.xlarge": 0.192,
+        "m5.2xlarge": 0.384,
+        "m5.4xlarge": 0.768,
+        "m5.8xlarge": 1.536,
+        "m5.12xlarge": 2.304,
+        "m5.16xlarge": 3.072,
+        "m5.24xlarge": 4.608,
+        "c5.large": 0.085,
+        "c5.xlarge": 0.17,
+        "c5.2xlarge": 0.34,
+        "c5.4xlarge": 0.68,
+        "r5.large": 0.126,
+        "r5.xlarge": 0.252,
+        "r5.2xlarge": 0.504,
+        "r5.4xlarge": 1.008,
+        "i3.large": 0.156,
+        "i3.xlarge": 0.312,
+        "i3.2xlarge": 0.624,
+        "p3.2xlarge": 3.06,
+        "p3.8xlarge": 12.24,
+        "p3.16xlarge": 24.48
+      },
+      "downsizeMap": {
+        "t2.xlarge": "t2.large",
+        "t2.large": "t2.medium",
+        "t2.medium": "t2.small",
+        "t2.small": "t2.micro",
+        "t3.xlarge": "t3.large",
+        "t3.large": "t3.medium",
+        "t3.medium": "t3.small",
+        "t3.small": "t3.micro",
+        "m5.24xlarge": "m5.16xlarge",
+        "m5.16xlarge": "m5.12xlarge",
+        "m5.12xlarge": "m5.8xlarge",
+        "m5.8xlarge": "m5.4xlarge",
+        "m5.4xlarge": "m5.2xlarge",
+        "m5.2xlarge": "m5.xlarge",
+        "m5.xlarge": "m5.large",
+        "c5.4xlarge": "c5.2xlarge",
+        "c5.2xlarge": "c5.xlarge",
+        "c5.xlarge": "c5.large",
+        "r5.4xlarge": "r5.2xlarge",
+        "r5.2xlarge": "r5.xlarge",
+        "r5.xlarge": "r5.large"
+      },
+      "dependencies": ["AWS::EC2::SecurityGroup", "AWS::EC2::Subnet"]
+    },
+    "AWS::EC2::Volume": {
+      "category": "Storage",
+      "pricing": {
+        "gp2": 0.10,
+        "gp3": 0.08,
+        "io1": 0.125,
+        "io2": 0.125,
+        "st1": 0.045,
+        "sc1": 0.015,
+        "standard": 0.05
+      },
+      "unit": "per-gb-month",
+      "dependencies": []
+    },
+    "AWS::RDS::DBInstance": {
+      "category": "Database",
+      "pricing": {
+        "db.t2.micro": 0.017,
+        "db.t2.small": 0.034,
+        "db.t2.medium": 0.068,
+        "db.t2.large": 0.136,
+        "db.t3.micro": 0.017,
+        "db.t3.small": 0.034,
+        "db.t3.medium": 0.068,
+        "db.t3.large": 0.136,
+        "db.m5.large": 0.171,
+        "db.m5.xlarge": 0.342,
+        "db.m5.2xlarge": 0.684,
+        "db.m5.4xlarge": 1.368,
+        "db.r5.large": 0.24,
+        "db.r5.xlarge": 0.48,
+        "db.r5.2xlarge": 0.96,
+        "db.r5.4xlarge": 1.92
+      },
+      "downsizeMap": {
+        "db.t2.large": "db.t2.medium",
+        "db.t2.medium": "db.t2.small",
+        "db.t2.small": "db.t2.micro",
+        "db.t3.large": "db.t3.medium",
+        "db.t3.medium": "db.t3.small",
+        "db.t3.small": "db.t3.micro",
+        "db.m5.4xlarge": "db.m5.2xlarge",
+        "db.m5.2xlarge": "db.m5.xlarge",
+        "db.m5.xlarge": "db.m5.large",
+        "db.r5.4xlarge": "db.r5.2xlarge",
+        "db.r5.2xlarge": "db.r5.xlarge",
+        "db.r5.xlarge": "db.r5.large"
+      },
+      "dependencies": ["AWS::EC2::SecurityGroup", "AWS::RDS::DBSubnetGroup"]
+    },
+    "AWS::ElasticLoadBalancingV2::LoadBalancer": {
+      "category": "Networking",
+      "pricing": {
+        "application": 0.0225,
+        "network": 0.0225,
+        "gateway": 0.0125
+      },
+      "unit": "per-hour",
+      "dependencies": ["AWS::EC2::Subnet", "AWS::EC2::SecurityGroup"]
+    },
+    "AWS::ElasticLoadBalancingV2::TargetGroup": {
+      "category": "Networking",
+      "pricing": {},
+      "unit": "included-with-lb",
+      "dependencies": ["AWS::ElasticLoadBalancingV2::LoadBalancer"]
+    },
+    "AWS::ECS::Service": {
+      "category": "Containers",
+      "pricing": {},
+      "unit": "depends-on-launch-type",
+      "dependencies": ["AWS::ECS::Cluster", "AWS::ECS::TaskDefinition"]
+    },
+    "AWS::ECS::Cluster": {
+      "category": "Containers",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": []
+    },
+    "AWS::Lambda::Function": {
+      "category": "Compute",
+      "pricing": {
+        "per-request": 0.0000002,
+        "per-gb-second": 0.0000166667
+      },
+      "unit": "per-invocation",
+      "dependencies": ["AWS::IAM::Role"]
+    },
+    "AWS::S3::Bucket": {
+      "category": "Storage",
+      "pricing": {
+        "Standard": 0.023,
+        "IntelligentTiering": 0.023,
+        "StandardIA": 0.0125,
+        "OneZoneIA": 0.01,
+        "Glacier": 0.004,
+        "DeepArchive": 0.00099
+      },
+      "unit": "per-gb-month",
+      "dependencies": []
+    },
+    "AWS::DynamoDB::Table": {
+      "category": "Database",
+      "pricing": {
+        "per-wcu": 0.00065,
+        "per-rcu": 0.00013,
+        "per-gb-month": 0.25
+      },
+      "unit": "provisioned-throughput",
+      "dependencies": []
+    },
+    "AWS::EC2::EIP": {
+      "category": "Networking",
+      "pricing": {
+        "unattached": 0.005
+      },
+      "unit": "per-hour-unattached",
+      "dependencies": []
+    },
+    "AWS::EC2::NatGateway": {
+      "category": "Networking",
+      "pricing": {
+        "per-hour": 0.045,
+        "per-gb": 0.045
+      },
+      "unit": "per-hour-plus-data",
+      "dependencies": ["AWS::EC2::Subnet", "AWS::EC2::EIP"]
+    },
+    "AWS::EC2::SecurityGroup": {
+      "category": "Networking",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": ["AWS::EC2::VPC"]
+    },
+    "AWS::EC2::Subnet": {
+      "category": "Networking",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": ["AWS::EC2::VPC"]
+    },
+    "AWS::EC2::VPC": {
+      "category": "Networking",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": []
+    },
+    "AWS::IAM::Role": {
+      "category": "Security",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": []
+    },
+    "AWS::SNS::Topic": {
+      "category": "Messaging",
+      "pricing": {
+        "per-publish": 0.0000005
+      },
+      "unit": "per-request",
+      "dependencies": []
+    },
+    "AWS::SQS::Queue": {
+      "category": "Messaging",
+      "pricing": {
+        "per-request": 0.0000004
+      },
+      "unit": "per-request",
+      "dependencies": []
+    },
+    "AWS::CloudWatch::Alarm": {
+      "category": "Monitoring",
+      "pricing": {
+        "standard": 0.10,
+        "high-resolution": 0.30
+      },
+      "unit": "per-alarm-month",
+      "dependencies": []
+    },
+    "AWS::AutoScaling::AutoScalingGroup": {
+      "category": "Compute",
+      "pricing": {},
+      "unit": "no-charge",
+      "dependencies": ["AWS::AutoScaling::LaunchConfiguration"]
+    },
+    "AWS::ElastiCache::CacheCluster": {
+      "category": "Database",
+      "pricing": {
+        "cache.t2.micro": 0.017,
+        "cache.t2.small": 0.034,
+        "cache.t2.medium": 0.068,
+        "cache.t3.micro": 0.017,
+        "cache.t3.small": 0.034,
+        "cache.t3.medium": 0.068,
+        "cache.m5.large": 0.156,
+        "cache.m5.xlarge": 0.312,
+        "cache.r5.large": 0.228,
+        "cache.r5.xlarge": 0.455
+      },
+      "downsizeMap": {
+        "cache.t2.medium": "cache.t2.small",
+        "cache.t2.small": "cache.t2.micro",
+        "cache.t3.medium": "cache.t3.small",
+        "cache.t3.small": "cache.t3.micro",
+        "cache.m5.xlarge": "cache.m5.large",
+        "cache.r5.xlarge": "cache.r5.large"
+      },
+      "dependencies": ["AWS::EC2::SecurityGroup"]
+    }
+  },
+  "regions": {
+    "us-east-1": { "name": "US East (N. Virginia)", "multiplier": 1.0 },
+    "us-west-2": { "name": "US West (Oregon)", "multiplier": 1.0 },
+    "eu-west-1": { "name": "EU (Ireland)", "multiplier": 1.1 },
+    "ap-southeast-1": { "name": "Asia Pacific (Singapore)", "multiplier": 1.15 },
+    "ap-northeast-1": { "name": "Asia Pacific (Tokyo)", "multiplier": 1.2 }
+  }
+}

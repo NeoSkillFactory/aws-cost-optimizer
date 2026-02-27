@@ -1,0 +1,144 @@
+{
+  "idleThresholds": {
+    "AWS::EC2::Instance": {
+      "cpuUtilization": {
+        "threshold": 10,
+        "unit": "percent",
+        "period": "7 days",
+        "description": "Instance with less than 10% CPU utilization over 7 days is considered idle"
+      },
+      "networkIn": {
+        "threshold": 1048576,
+        "unit": "bytes-per-day",
+        "period": "7 days",
+        "description": "Instance with less than 1MB/day network input is considered idle"
+      }
+    },
+    "AWS::EC2::Volume": {
+      "readOps": {
+        "threshold": 100,
+        "unit": "ops-per-day",
+        "period": "14 days",
+        "description": "Volume with fewer than 100 read ops/day over 14 days is considered idle"
+      },
+      "writeOps": {
+        "threshold": 100,
+        "unit": "ops-per-day",
+        "period": "14 days",
+        "description": "Volume with fewer than 100 write ops/day over 14 days is considered idle"
+      }
+    },
+    "AWS::RDS::DBInstance": {
+      "connections": {
+        "threshold": 5,
+        "unit": "connections-per-day",
+        "period": "7 days",
+        "description": "RDS instance with fewer than 5 connections/day is considered idle"
+      },
+      "cpuUtilization": {
+        "threshold": 5,
+        "unit": "percent",
+        "period": "7 days",
+        "description": "RDS instance with less than 5% CPU utilization is considered idle"
+      }
+    },
+    "AWS::ElasticLoadBalancingV2::LoadBalancer": {
+      "requestCount": {
+        "threshold": 100,
+        "unit": "requests-per-day",
+        "period": "7 days",
+        "description": "Load balancer with fewer than 100 requests/day is considered idle"
+      }
+    },
+    "AWS::ElastiCache::CacheCluster": {
+      "currConnections": {
+        "threshold": 5,
+        "unit": "connections",
+        "period": "7 days",
+        "description": "Cache cluster with fewer than 5 connections is considered idle"
+      }
+    },
+    "AWS::EC2::EIP": {
+      "attached": {
+        "threshold": false,
+        "unit": "boolean",
+        "description": "Unattached Elastic IP addresses incur hourly charges"
+      }
+    },
+    "AWS::EC2::NatGateway": {
+      "bytesProcessed": {
+        "threshold": 1048576,
+        "unit": "bytes-per-day",
+        "period": "7 days",
+        "description": "NAT Gateway processing less than 1MB/day is considered idle"
+      }
+    }
+  },
+  "overProvisioningThresholds": {
+    "AWS::EC2::Instance": {
+      "cpuUtilization": {
+        "threshold": 30,
+        "unit": "percent",
+        "period": "14 days",
+        "description": "Instance consistently below 30% CPU should be downsized"
+      },
+      "memoryUtilization": {
+        "threshold": 30,
+        "unit": "percent",
+        "period": "14 days",
+        "description": "Instance consistently below 30% memory should be downsized"
+      }
+    },
+    "AWS::RDS::DBInstance": {
+      "cpuUtilization": {
+        "threshold": 25,
+        "unit": "percent",
+        "period": "14 days",
+        "description": "RDS instance consistently below 25% CPU should be downsized"
+      },
+      "freeStorageSpace": {
+        "threshold": 70,
+        "unit": "percent-free",
+        "period": "30 days",
+        "description": "RDS instance with 70%+ free storage is over-provisioned"
+      }
+    },
+    "AWS::DynamoDB::Table": {
+      "consumedReadCapacity": {
+        "threshold": 20,
+        "unit": "percent-of-provisioned",
+        "period": "14 days",
+        "description": "DynamoDB table using less than 20% provisioned read capacity"
+      },
+      "consumedWriteCapacity": {
+        "threshold": 20,
+        "unit": "percent-of-provisioned",
+        "period": "14 days",
+        "description": "DynamoDB table using less than 20% provisioned write capacity"
+      }
+    },
+    "AWS::ElastiCache::CacheCluster": {
+      "cpuUtilization": {
+        "threshold": 20,
+        "unit": "percent",
+        "period": "14 days",
+        "description": "Cache cluster consistently below 20% CPU should be downsized"
+      }
+    },
+    "AWS::EC2::Volume": {
+      "sizeUtilization": {
+        "threshold": 20,
+        "unit": "percent-used",
+        "period": "30 days",
+        "description": "Volume with less than 20% space used is over-provisioned"
+      }
+    }
+  },
+  "instanceFamilyRecommendations": {
+    "compute-intensive": ["c5", "c6g"],
+    "memory-intensive": ["r5", "r6g"],
+    "general-purpose": ["t3", "m5", "m6g"],
+    "storage-intensive": ["i3", "d2"],
+    "gpu": ["p3", "g4dn"]
+  }
+}

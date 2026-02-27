@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS CloudFormation Cost Optimization Report</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+    .header { background: #232f3e; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .metric { text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px; }
+    .metric-value { font-size: 24px; font-weight: bold; color: #232f3e; }
+    .metric-label { color: #666; font-size: 14px; }
+    .savings { color: #2e7d32; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f8f9fa; font-weight: 600; }
+    .severity-high { color: #c62828; font-weight: bold; }
+    .severity-medium { color: #f57f17; font-weight: bold; }
+    .severity-low { color: #2e7d32; font-weight: bold; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+    .tag-idle { background: #ffcdd2; color: #c62828; }
+    .tag-overprovisioned { background: #fff9c4; color: #f57f17; }
+    .tag-optimization { background: #c8e6c9; color: #2e7d32; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>AWS CloudFormation Cost Optimization Report</h1>
+    <p>Sample CloudFormation template with over-provisioned and unused resources for testing</p>
+    <p>Region: us-east-1</p>
+  </div>
+  <div class="card">
+    <h2>Summary</h2>
+    <div class="summary">
+      <div class="metric"><div class="metric-value">22</div><div class="metric-label">Total Resources</div></div>
+      <div class="metric"><div class="metric-value">$7347.33</div><div class="metric-label">Est. Monthly Cost</div></div>
+      <div class="metric"><div class="metric-value savings">$4857.36</div><div class="metric-label">Potential Savings</div></div>
+      <div class="metric"><div class="metric-value savings">66.1%</div><div class="metric-label">Savings %</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Recommendations</h2>
+    <table>
+      <thead><tr><th>#</th><th>Severity</th><th>Category</th><th>Resource</th><th>Title</th><th>Savings</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>BatchProcessor</td>
+          <td>GPU Instance Review Recommended<br><small>If no GPU workloads are running, switch to a general-purpose instance like m5.xlarge to save significantly.</small></td>
+          <td class="savings">$1787.04/mo</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>Database</td>
+          <td>RDS Instance May Be Over-Provisioned<br><small>Downsize from db.r5.4xlarge to db.r5.2xlarge to save $1401.60/month.</small></td>
+          <td class="savings">$1401.60/mo</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>SessionTable</td>
+          <td>DynamoDB High Provisioned Throughput<br><small>Consider switching to on-demand billing or enabling auto-scaling. Potential savings: $398.58/month.</small></td>
+          <td class="savings">$398.58/mo</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>WebServer</td>
+          <td>EC2 Instance May Be Over-Provisioned<br><small>Downsize from m5.4xlarge to m5.2xlarge to save $280.32/month.</small></td>
+          <td class="savings">$280.32/mo</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>OrphanedVolume</td>
+          <td>Unattached EBS Volume<br><small>Remove the volume if no longer needed, or attach it to an instance.</small></td>
+          <td class="savings">$257.50/mo</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td class="severity-medium">MEDIUM</td>
+          <td><span class="tag tag-optimization">optimization</span></td>
+          <td>OrphanedVolume</td>
+          <td>Provisioned IOPS Volume Review<br><small>If high IOPS are not consistently needed, switch to gp3 to save $217.50/month.</small></td>
+          <td class="savings">$217.50/mo</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>AppServer</td>
+          <td>EC2 Instance May Be Over-Provisioned<br><small>Downsize from r5.2xlarge to r5.xlarge to save $183.96/month.</small></td>
+          <td class="savings">$183.96/mo</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td class="severity-medium">MEDIUM</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>CacheCluster</td>
+          <td>ElastiCache Node May Be Over-Provisioned<br><small>Downsize from cache.r5.xlarge to cache.r5.large to save $165.71/month.</small></td>
+          <td class="savings">$165.71/mo</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>OldBackupVolume</td>
+          <td>Unattached EBS Volume<br><small>Remove the volume if no longer needed, or attach it to an instance.</small></td>
+          <td class="savings">$100.00/mo</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td class="severity-low">LOW</td>
+          <td><span class="tag tag-optimization">optimization</span></td>
+          <td>OldBackupVolume</td>
+          <td>Use gp3 Instead of gp2<br><small>Switch from gp2 to gp3 to save $20.00/month.</small></td>
+          <td class="savings">$20.00/mo</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td class="severity-high">HIGH</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>UnusedALB</td>
+          <td>Load Balancer Without Targets<br><small>Add target groups or remove the load balancer if unused.</small></td>
+          <td class="savings">$16.43/mo</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td class="severity-low">LOW</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>NatGateway</td>
+          <td>NAT Gateway Cost Review<br><small>For development, consider using NAT instances or VPC endpoints instead.</small></td>
+          <td class="savings">$16.43/mo</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td class="severity-medium">MEDIUM</td>
+          <td><span class="tag tag-overprovisioned">overprovisioned</span></td>
+          <td>Database</td>
+          <td>RDS Storage Type Review<br><small>If high IOPS are not required, switch to gp2/gp3 to save $5.00/month.</small></td>
+          <td class="savings">$5.00/mo</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td class="severity-medium">MEDIUM</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>UnusedEIP</td>
+          <td>Unassociated Elastic IP<br><small>Associate the EIP with a resource or release it.</small></td>
+          <td class="savings">$3.65/mo</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td class="severity-medium">MEDIUM</td>
+          <td><span class="tag tag-idle">idle</span></td>
+          <td>SpareEIP</td>
+          <td>Unassociated Elastic IP<br><small>Associate the EIP with a resource or release it.</small></td>
+          <td class="savings">$3.65/mo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Resource Details</h2>
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Monthly Cost</th><th>Issues</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>WebServer</td>
+          <td>Instance</td>
+          <td>$560.64</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>AppServer</td>
+          <td>Instance</td>
+          <td>$367.92</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>BatchProcessor</td>
+          <td>Instance</td>
+          <td>$2233.80</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>OrphanedVolume</td>
+          <td>Volume</td>
+          <td>$257.50</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>OldBackupVolume</td>
+          <td>Volume</td>
+          <td>$100.00</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>Database</td>
+          <td>DBInstance</td>
+          <td>$2865.70</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>UnusedALB</td>
+          <td>LoadBalancer</td>
+          <td>$16.43</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>UnusedEIP</td>
+          <td>EIP</td>
+          <td>$3.65</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>SpareEIP</td>
+          <td>EIP</td>
+          <td>$3.65</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>NatGateway</td>
+          <td>NatGateway</td>
+          <td>$32.85</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>NatEIP</td>
+          <td>EIP</td>
+          <td>$3.65</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>SessionTable</td>
+          <td>Table</td>
+          <td>$569.40</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>CacheCluster</td>
+          <td>CacheCluster</td>
+          <td>$332.15</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>VPC</td>
+          <td>VPC</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>PublicSubnet</td>
+          <td>Subnet</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>PublicSubnet2</td>
+          <td>Subnet</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>PrivateSubnet</td>
+          <td>Subnet</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>WebSecurityGroup</td>
+          <td>SecurityGroup</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>AppSecurityGroup</td>
+          <td>SecurityGroup</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>DBSecurityGroup</td>
+          <td>SecurityGroup</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>DBSubnetGroup</td>
+          <td>DBSubnetGroup</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>CacheSubnetGroup</td>
+          <td>SubnetGroup</td>
+          <td>$0.00</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="text-align:center;color:#666;font-size:12px;">Report generated at 2026-02-27T19:20:04.414Z by aws-cost-optimizer</p>
+</body>
+</html>
