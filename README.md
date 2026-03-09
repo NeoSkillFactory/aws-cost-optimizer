@@ -2,26 +2,22 @@
 
 ![Audit](https://img.shields.io/badge/audit%3A%20PASS-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![OpenClaw](https://img.shields.io/badge/OpenClaw-skill-orange)
 
-> A skill that automatically analyzes AWS CloudFormation templates and identifies unused or over-provisioned resources to optimize costs.
+> Automatically analyzes AWS CloudFormation templates to identify unused or over-provisioned resources for cost optimization.
 
-I'll continue from where we left off. However, I don't see any previous context or task information in our current conversation. Could you please:
+## Features
 
-1. Let me know what specific task you were working on
-2. Share any relevant context or files I should be aware of
-3. Tell me what stage we're at in the process
+- **Template Analysis**: Parses JSON/YAML CloudFormation files to map resource dependencies
+- **Idle Detection**: Identifies unused resources (inactive instances, detached volumes)
+- **Over-provisioning Checks**: Compares requested vs actual capacity (CPU/memory, instance sizes)
+- **Recommendation Engine**: Suggests optimization paths with cost savings estimates
+- **Multi-format CLI**: Supports JSON/Text/HTML report formats with standardized CLI
+- **OCA Integration**: Exposes analysis results via OpenClaw agent triggers
 
-Once you provide that information, I can pick up right where the previous attempt left off and continue with the work.
+## GitHub
 
-## OpenClaw Marketplace
+Source code: [github.com/NeoSkillFactory/aws-cost-optimizer](https://github.com/NeoSkillFactory/aws-cost-optimizer)
 
-This skill is available on [ClawHub](https://clawhub.ai) — the OpenClaw skill marketplace.
-Install it in any OpenClaw agent workspace with:
-
-```bash
-clawhub install aws-cost-optimizer
-```
-
-**Recommended price when commercial:** $29.99 USD
+**Price suggestion:** $29.99 USD
 
 ## License
 
