@@ -17,8 +17,6 @@
 
 Source code: [github.com/NeoSkillFactory/aws-cost-optimizer](https://github.com/NeoSkillFactory/aws-cost-optimizer)
 
-**Price suggestion:** $29.99 USD
-
 ## License
 
 MIT © NeoSkillFactory
